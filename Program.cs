@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // builder.Services.AddDbContext<TareasContext>( p => p.UseInMemoryDatabase("TareasDB"));
 
-builder.Services.AddSqlServer<TareasContext>("Data Source=(local); Initial Catalog=TareasDb;Integrated Security=True;Trusted_Connection=True;TrustServerCertificate=True");
+builder.Services.AddSqlServer<TareasContext>(builder.Configuration.GetConnectionString("connTareas"));
 
 var app = builder.Build();
 
