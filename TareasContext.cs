@@ -21,6 +21,7 @@ public class TareasContext: DbContext
             categoria.Property(p => p.Nombre).IsRequired().HasMaxLength(150);
 
             categoria.Property(p => p.Description);
+            categoria.Property(p => p.Peso);
 
         });
 

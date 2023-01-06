@@ -13,5 +13,7 @@ public class Categoria
 
     public string Description {get;set;}
 
+    public int Peso {get;set;}
+
     public virtual ICollection<Tarea> Tareas {get;set;}
 }
