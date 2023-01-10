@@ -26,7 +26,7 @@ app.MapGet("/api/tareas/", async ([FromServices] TareasContext dbContext) =>
 });
 
 // Endpoint para obtener todas las tareas que cumplan con la prioridad indicada
-app.MapGet("/api/tareas/prioridad/{prio}", async ([FromServices] TareasContext dbContext, int prio) =>
+app.MapGet("/api/tareas/prioridad/{prio}", async ([FromServices] TareasContext dbContext, [FromRoute] int prio) =>
 {
     return Results.Ok(dbContext.Tareas.Include(p => p.Categoria)
     .Where(p => (int)p.PrioridadTarea == prio));
@@ -56,5 +56,57 @@ app.MapPost("/api/tareas", async ([FromServices] TareasContext dbContext, [FromB
     return Results.Ok();
 });
 
+
+// Endpoint para actualizar datos de una tarea
+app.MapPut("/api/tareas/{id}", async ([FromServices] TareasContext dbContext, [FromBody] Tarea tarea, [FromRoute] Guid id) =>
+{
+    // Buscar la tarea en cuestion
+    var tareaActual = dbContext.Tareas.Find(id);
+    // Verificar que la tarea existe
+    if(tareaActual != null)
+    {
+        // Se actualizan cada uno de los campos que se deben cambiar
+        tareaActual.CategoriaId = tarea.CategoriaId;
+        tareaActual.Titulo = tarea.Titulo;
+        tareaActual.PrioridadTarea = tarea.PrioridadTarea;
+        tareaActual.Description = tarea.Description;
+
+        // Se guardan los cambios realizados
+        await dbContext.SaveChangesAsync();
+
+        // Respuesta Ok 200
+        return Results.Ok();
+
+    } else
+    {
+        return Results.NotFound();
+    }
+});
+
+// Actualizar categorias
+app.MapPut("/api/categorias/{id}", async ([FromServices] TareasContext dbContext, [FromBody] Categoria categoria, [FromRoute] Guid id) =>
+{
+    // Buscar la categoria en cuestion
+    var categoriaActual = dbContext.Categorias.Find(id);
+    // Verificar que la categoria existe
+    if(categoriaActual != null)
+    {
+        categoriaActual.Nombre = categoria.Nombre;
+        categoriaActual.Description = categoria.Description;
+        categoriaActual.Peso = categoria.Peso;
+
+        // Se guardan los cambios realizados
+        await dbContext.SaveChangesAsync();
+
+        // Respuesta Ok 200
+        return Results.Ok();
+
+    } else
+    {
+        return Results.NotFound();
+    }
+    
+    
+});
 
 app.Run();
